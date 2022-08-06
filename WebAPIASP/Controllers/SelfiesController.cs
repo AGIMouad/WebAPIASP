@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using selfieAWookie.Core.Selfies.Domain;
+using selfieAWookie.Core.Selfies.Infrastructures;
 
 namespace WebAPIASP.Controllers
 {
@@ -8,6 +10,14 @@ namespace WebAPIASP.Controllers
     [ApiController]
     public class SelfiesController : ControllerBase
     {
+        #region Fields
+        private readonly SelfiesContext _context;
+        #endregion
+        #region constructors
+        public SelfiesController(SelfiesContext context) {
+            this._context = context;
+        }
+            #endregion  
         #region public metohds
         [HttpGet(Name = "Selfies")]
         //public IEnumerable<Selfies> Get()
@@ -16,11 +26,11 @@ namespace WebAPIASP.Controllers
         //}
         public IActionResult get()
         {
-            var modele = Enumerable.Range(0, 5).Select(i => new Selfie()
-            {
-               Id = i
-            });
-
+           
+            var modele = this._context.selfies
+                .Include(item => item.Wookie)
+                .Select(item => new { Title=item.Title,  WookieID = item.Wookie.id,nbrSelfiesDeWookie = item.Wookie.Selfies.Count})
+                .ToList();
             return this.Ok(modele);
 
         }

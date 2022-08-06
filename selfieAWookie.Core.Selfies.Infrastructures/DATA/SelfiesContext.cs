@@ -12,6 +12,14 @@ namespace selfieAWookie.Core.Selfies.Infrastructures
 {
     public class SelfiesContext : DbContext
     {
+        #region constructors
+
+        public SelfiesContext(DbContextOptions options) : base(options)
+        {
+          
+        }
+        public SelfiesContext():base() { }
+        #endregion
         #region internal methods
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
